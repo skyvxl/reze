@@ -12,12 +12,16 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
 
 	rootCmd := cli.NewRootCommand()
 
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		_, err := fmt.Fprintln(os.Stderr, err)
+		if err != nil {
+			return
+		}
+		stop()
 		os.Exit(1)
 	}
+	stop()
 }

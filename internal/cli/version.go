@@ -12,7 +12,10 @@ func newVersionCommand() *cobra.Command {
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Fprintln(cmd.OutOrStdout(), buildinfo.String())
+			_, err := fmt.Fprintln(cmd.OutOrStdout(), buildinfo.String())
+			if err != nil {
+				return
+			}
 		},
 	}
 }

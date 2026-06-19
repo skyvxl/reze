@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/skyvxl/reze/internal/gitx"
+	"github.com/skyvxl/reze/internal/guard"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +15,22 @@ func newDoctorCommand() *cobra.Command {
 		SilenceUsage: true,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := gitx.CheckGit(cmd.Context(), "."); err != nil {
+			gitClient, err := gitx.NewClient()
+			if err != nil {
 				return HumanError(err)
 			}
-			fmt.Fprintln(cmd.OutOrStdout(), "git: ok")
+			doctor := guard.NewDoctor(gitClient)
+			opts := guard.DoctorOptions{
+				StartDir: ".",
+			}
+			report, err := doctor.Run(cmd.Context(), opts)
+			if err != nil {
+				return HumanError(err)
+			}
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), "Repository: "+report.RepositoryRoot)
+			if err != nil {
+				return err
+			}
 			return nil
 		},
 	}
