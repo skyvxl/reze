@@ -71,3 +71,13 @@ tasks:
       - "echo VERSION:    {{.VERSION}}"
       - "echo COMMIT:     {{.COMMIT}}"
       - "echo BUILD_DATE: {{.BUILD_DATE}}"
+
+  install:
+    desc: Install reze to GOPATH/bin
+    cmds:
+      - go install -ldflags "{{.LDFLAGS}}" {{.MAIN_PKG}}
+
+  uninstall:
+    desc: Uninstall reze from GOPATH/bin
+    cmds:
+      - go clean -i {{.MAIN_PKG}}
