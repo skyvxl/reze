@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/skyvxl/reze/internal/gitx"
 	"github.com/skyvxl/reze/internal/guard"
 	"github.com/spf13/cobra"
@@ -27,7 +25,7 @@ func newDoctorCommand() *cobra.Command {
 			if err != nil {
 				return HumanError(err)
 			}
-			_, err = fmt.Fprintln(cmd.OutOrStdout(), "Repository: "+report.RepositoryRoot)
+			err = guard.PrintReportText(cmd.OutOrStdout(), report)
 			if err != nil {
 				return err
 			}
